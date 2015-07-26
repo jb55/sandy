@@ -28,15 +28,19 @@ extern struct pixel pixel_defs[num_pixel_types];
 struct world {
   u8* pixels;
   u8* pixels_next;
+  u8* current_pixels;
   int w;
   int h;
 };
 
-u8
+void
 world_randomize (struct world *world);
 
 struct world *
 world_init(struct world *world, int w, int h);
+
+void
+world_swap_buffers(struct world *world);
 
 void
 world_update(struct world *world);

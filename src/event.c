@@ -10,7 +10,7 @@ void process_events(const SDL_Renderer *renderer,
   while (SDL_PollEvent(&event)) {
     switch (event.type) {
     case SDL_WINDOWEVENT_RESIZED:
-      SDL_SetWindowSize(window, event.window.data1, event.window.data2);
+      /* SDL_SetWindowSize(window, event.window.data1, event.window.data2); */
       break;
     case SDL_QUIT:
       SDL_Quit();

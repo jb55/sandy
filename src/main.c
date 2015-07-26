@@ -31,12 +31,15 @@ int main(void)
 
     surface = SDL_GetWindowSurface(window);
 
-    /* world_update(&world); */
+    world_update(&world);
     render(surface, &world);
 
     SDL_RenderPresent(renderer);
 
-    SDL_Delay(16);
+    world_swap_buffers(&world);
+
+    SDL_Delay(32);
+    SDL_RenderClear(renderer);
     /* SDL_LoadObject("src/libsandy.so"); */
   }
 
