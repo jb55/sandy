@@ -30,10 +30,10 @@ void render(SDL_Surface *surface, struct world *world) {
     return;
   }
 
-  fprintf(stderr, "window surface w %d h %d pitch %d\n",
-          surface->w,
-          surface->h,
-          surface->pitch);
+  /* fprintf(stderr, "window surface w %d h %d pitch %d\n", */
+  /*         surface->w, */
+  /*         surface->h, */
+  /*         surface->pitch); */
 
 
   surface_pixels = (u32 *)surface->pixels;

@@ -46,6 +46,13 @@ get_pixel (struct world *world, u32 code, int x, int y) {
 }
 
 void
+world_set_pixel (struct world *world, int x, int y, u8 pixel) {
+  if (y < 0 || y > world->h) return;
+  if (x < 0 || x > world->w) return;
+  world->pixels[index_pixels(world, x, y)] = pixel;
+}
+
+void
 world_randomize (struct world *world) {
   int x = 0, y = 0;
   u8 pixel = pix_air;
@@ -85,7 +92,7 @@ world_update(struct world *world) {
     if (should_move(middle)) {
       u32 bottomi = index_pixels(world, x, y+1);
       u8 bottom = get_pixel(world, bottomi, x, y+1);
-      if (bottom != pix_bounds && should_collide(bottom)) {
+      if (should_collide(bottom)) {
         pixels_next[middlei] = pix_air;
         pixels_next[bottomi] = middle;
       }
@@ -99,7 +106,7 @@ world_update(struct world *world) {
   }
 
   end_time = SDL_GetTicks();
-  printf("world update %d ms\n", end_time - start_time);
+  /* printf("world update %d ms\n", end_time - start_time); */
 }
 
 void

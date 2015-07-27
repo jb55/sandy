@@ -34,6 +34,9 @@ struct world {
 };
 
 void
+world_set_pixel (struct world *world, int x, int y, u8 pixel);
+
+void
 world_randomize (struct world *world);
 
 struct world *

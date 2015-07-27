@@ -27,7 +27,7 @@ int main(void)
     SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
 
   while (1) {
-    process_events(renderer, window, &surface);
+    process_events(renderer, window, &world, &surface);
 
     surface = SDL_GetWindowSurface(window);
 
@@ -38,7 +38,7 @@ int main(void)
 
     world_swap_buffers(&world);
 
-    SDL_Delay(32);
+    SDL_Delay(16);
     SDL_RenderClear(renderer);
     /* SDL_LoadObject("src/libsandy.so"); */
   }
