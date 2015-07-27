@@ -7,7 +7,8 @@ CFLAGS = -ggdb -O2  -I include -Wall -Wextra -Weverything -std=c99 \
 						-Wno-unused-variable \
 						-Wno-cast-align \
 						-Wno-padded
-LDFLAGS = -lSDL2 -lGL
+LDFLAGS = -lSDL2 -framework OpenGL
+
 SRC=src
 
 SHLIB=$(SRC)/lib$(NAME).so
@@ -24,7 +25,7 @@ all: $(BIN)
 	$(CC) $(CFLAGS) -fPIC $(DEFS) -c $< -o $@
 
 $(SHLIB): $(OBJS)
-	$(CC) $(CFLAGS) -shared $^ -o $@
+	$(CC) $(CFLAGS) $(LDFLAGS) -shared $^ -o $@
 
 $(BIN): $(SRC)/main.o $(SHLIB)
 	$(CC) $(CFLAGS) $(DEFS) $^ $(LDFLAGS) -o $@
