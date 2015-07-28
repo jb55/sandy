@@ -7,7 +7,7 @@ CFLAGS = -ggdb -O2  -I include -Wall -Wextra -Weverything -std=c99 \
 						-Wno-unused-variable \
 						-Wno-cast-align \
 						-Wno-padded
-LDFLAGS = -lSDL2 -framework OpenGL
+LDFLAGS = -lSDL2 -lGL
 
 SRC=src
 
