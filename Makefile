@@ -1,7 +1,7 @@
 NAME ?= sandy
 BIN ?= $(NAME)
 PREFIX ?= /usr/local
-CFLAGS = -ggdb -O2  -I include -Wall -Wextra -Weverything -std=c99 \
+CFLAGS = -ggdb -O2  -I include -Wall -Wextra -std=c99 \
 						-Wno-unused-function \
 						-Wno-unused-parameter \
 						-Wno-unused-variable \
