@@ -21,12 +21,9 @@ field_free(struct field *field) {
 
 int
 field_add_global_force(struct field * field, struct field_vec force) {
-  if (field->num_global_forces > ARRAY_SIZE(field->global_forces)) {
+  if ((size_t)field->num_global_forces > ARRAY_SIZE(field->global_forces)) {
     return -1;
   }
   field->global_forces[field->num_global_forces++] = force;
   return field->num_global_forces - 1;
-}
-
-struct field_vec field_force_at(int x, int y) {
 }

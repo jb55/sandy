@@ -21,6 +21,7 @@ world_init(struct world *world, int w, int h) {
   world->pixels_next = (u8*)malloc((size_t)w * h * 2);
   world->w = w;
   world->h = h;
+  return world;
 }
 
 static inline u32

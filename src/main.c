@@ -9,8 +9,6 @@
 
 
 int main(void) {
-  int i, r;
-  Uint32 rmask, gmask, bmask, amask;
   SDL_Surface *surface;
   int start_time, end_time;
   struct world world;

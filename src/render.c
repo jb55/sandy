@@ -18,7 +18,7 @@ put_pixel(SDL_Surface *surface, int x, int y, struct pixel *pixdef) {
 }
 
 void render(SDL_Surface *surface, struct world *world) {
-  u32 surface_size;
+  int surface_size;
   u32 *surface_pixels;
   struct pixel *pixdef;
   u8 pixel;
