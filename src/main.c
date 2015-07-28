@@ -8,11 +8,11 @@
 #include <stdlib.h>
 
 
-int main(void)
-{
+int main(void) {
   int i, r;
   Uint32 rmask, gmask, bmask, amask;
   SDL_Surface *surface;
+  int start_time, end_time;
   struct world world;
 
   srand(time(NULL));
@@ -31,8 +31,13 @@ int main(void)
 
     surface = SDL_GetWindowSurface(window);
 
+    start_time = SDL_GetTicks();
+
     world_update(&world);
     render(surface, &world);
+
+    end_time = SDL_GetTicks();
+    printf("update + render %d ms\n", end_time - start_time);
 
     SDL_RenderPresent(renderer);
 

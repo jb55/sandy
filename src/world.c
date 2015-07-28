@@ -24,7 +24,8 @@ world_init(struct world *world, int w, int h) {
 }
 
 static inline u32
-index_pixels (struct world *world, int x, int y) {
+world_index_pixels (struct world *world, int x, int y) {
+  /* return morton_encode2(x, y); */
   return y * world->w + x;
 }
 
@@ -49,7 +50,7 @@ void
 world_set_pixel (struct world *world, int x, int y, u8 pixel) {
   if (y < 0 || y > world->h) return;
   if (x < 0 || x > world->w) return;
-  world->pixels[index_pixels(world, x, y)] = pixel;
+  world->pixels[world_index_pixels(world, x, y)] = pixel;
 }
 
 void
@@ -62,7 +63,7 @@ world_randomize (struct world *world) {
     pixel = rand() % 16;
     pixel = pixel > 4 || pixel == pix_bounds ? pix_air : pixel;
 
-    pixels[index_pixels(world, x, y)] = pixel;
+    pixels[world_index_pixels(world, x, y)] = pixel;
   }
 }
 
@@ -79,7 +80,7 @@ world_update(struct world *world) {
 
   for (y = world->h-1; y >= 0; y--)
   for (x = world->w-1; x >= 0; x--) {
-    u32 middlei = index_pixels(world, x, y);
+    u32 middlei = world_index_pixels(world, x, y);
     u8 middle = get_pixel(world, middlei, x, y);
     /* u32 topi    = morton_encode2(x, y-1); */
     /* u32 righti  = morton_encode2(x+1, y); */
@@ -90,7 +91,7 @@ world_update(struct world *world) {
     /* u8 left   = get_pixel(world, lefti, x-1, y); */
 
     if (should_move(middle)) {
-      u32 bottomi = index_pixels(world, x, y+1);
+      u32 bottomi = world_index_pixels(world, x, y+1);
       u8 bottom = get_pixel(world, bottomi, x, y+1);
       if (should_collide(bottom)) {
         pixels_next[middlei] = pix_air;

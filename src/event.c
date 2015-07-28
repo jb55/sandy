@@ -11,7 +11,7 @@ void process_events(const SDL_Renderer *renderer,
   SDL_Event event;
   u16 x, y;
   bool down = false;
-  u8 draw_pixel = pix_air;
+  static u8 draw_pixel = pix_sand;
   static bool left_down = false;
   static bool right_down = false;
 
@@ -24,7 +24,6 @@ void process_events(const SDL_Renderer *renderer,
       x = event.button.x;
       y = event.button.y;
       down = left_down || right_down;
-      draw_pixel = left_down ? pix_sand : right_down ? pix_rock : pix_air;
 
       if (down) {
         world_set_pixel(world, x, y, draw_pixel);
@@ -36,31 +35,23 @@ void process_events(const SDL_Renderer *renderer,
       break;
     case SDL_MOUSEBUTTONDOWN:
       switch (event.button.button) {
-      case SDL_BUTTON_LEFT:
-        left_down = true;
-        break;
-      case SDL_BUTTON_RIGHT:
-        right_down = true;
-        break;
+      case SDL_BUTTON_LEFT: left_down = true; break;
+      case SDL_BUTTON_RIGHT: right_down = true; break;
       }
       break;
     case SDL_MOUSEBUTTONUP:
       switch (event.button.button) {
-      case SDL_BUTTON_LEFT:
-        left_down = false;
-        break;
-      case SDL_BUTTON_RIGHT:
-        right_down = false;
-        break;
+      case SDL_BUTTON_LEFT: left_down = false; break;
+      case SDL_BUTTON_RIGHT: right_down = false; break;
       }
       break;
     case SDL_KEYUP:
       /* SDL_SetWindowSize(window, event.window.data1, event.window.data2); */
       printf("key %d\n", event.key.keysym.sym);
       switch (event.key.keysym.sym) {
-      case 'r':
-        world_randomize(world);
-        break;
+      case '1': draw_pixel = pix_sand; break;
+      case '2': draw_pixel = pix_rock; break;
+      case 'r': world_randomize(world); break;
       case 'c':
         // clear the world
         memset(world->pixels, pix_air, world->w * world->h);
