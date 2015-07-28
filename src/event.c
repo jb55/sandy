@@ -48,13 +48,16 @@ void process_events(const SDL_Renderer *renderer,
     case SDL_KEYUP:
       /* SDL_SetWindowSize(window, event.window.data1, event.window.data2); */
       printf("key %d\n", event.key.keysym.sym);
-      switch (event.key.keysym.sym) {
-      case '1': draw_pixel = pix_sand; break;
-      case '2': draw_pixel = pix_rock; break;
+      char key = event.key.keysym.sym;
+      switch (key) {
       case 'r': world_randomize(world); break;
       case 'c':
         // clear the world
         memset(world->pixels, pix_air, world->w * world->h);
+        break;
+      default:
+        if (key >= '0' && key <= '9')
+          draw_pixel = key - '0';
         break;
       }
       break;

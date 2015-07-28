@@ -12,8 +12,8 @@ enum pixel_type {
 };
 
 enum pixel_flags {
-  STATIC = 1 << 0,
-  PASS = 1 << 1,
+  STATIC    = 1 << 0,
+  PASS      = 1 << 1,
   INVISIBLE = 1 << 2,
 };
 

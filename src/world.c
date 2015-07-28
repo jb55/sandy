@@ -94,9 +94,10 @@ world_update(struct world *world) {
     if (should_move(middle)) {
       u32 bottomi = world_index_pixels(world, x, y+1);
       u8 bottom = get_pixel(world, bottomi, x, y+1);
+
       if (should_collide(bottom)) {
-        pixels_next[middlei] = pix_air;
         pixels_next[bottomi] = middle;
+        pixels_next[middlei] = pix_air;
       }
       else {
         pixels_next[middlei] = middle;
