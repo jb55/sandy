@@ -26,11 +26,11 @@ void process_events(const SDL_Renderer *renderer,
       down = left_down || right_down;
 
       if (down) {
-        world_set_pixel(world, x, y, draw_pixel);
-        world_set_pixel(world, x+1, y, draw_pixel);
-        world_set_pixel(world, x-1, y, draw_pixel);
-        world_set_pixel(world, x, y-1, draw_pixel);
-        world_set_pixel(world, x, y+1, draw_pixel);
+        world_set_pixel_type(world, x, y, draw_pixel);
+        world_set_pixel_type(world, x+1, y, draw_pixel);
+        world_set_pixel_type(world, x-1, y, draw_pixel);
+        world_set_pixel_type(world, x, y-1, draw_pixel);
+        world_set_pixel_type(world, x, y+1, draw_pixel);
       }
       break;
     case SDL_MOUSEBUTTONDOWN:
@@ -53,7 +53,7 @@ void process_events(const SDL_Renderer *renderer,
       case 'r': world_randomize(world); break;
       case 'c':
         // clear the world
-        memset(world->pixels, pix_air, world->w * world->h);
+        world_clear(world);
         break;
       default:
         if (key >= '0' && key <= '9')

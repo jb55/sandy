@@ -17,24 +17,37 @@ enum pixel_flags {
   INVISIBLE = 1 << 2,
 };
 
-struct pixel {
+struct pixel_def {
   char *name;
   u8 r, g, b;
   u32 flags;
 };
 
-extern struct pixel pixel_defs[num_pixel_types];
+struct pixel {
+  float x, y;
+  float lx, ly;
+  float accel;
+  u8 type;
+};
+
+extern struct pixel_def pixel_defs[num_pixel_types];
+extern struct pixel blank_pixel;
 
 struct world {
-  u8* pixels;
-  u8* pixels_next;
-  u8* current_pixels;
+  struct pixel* pixels;
+  struct pixel* pixels_next;
+  struct pixel* current_pixels;
+  int last_time, last_dt;
+  int num_pixels;
   int w;
   int h;
 };
 
 void
-world_set_pixel (struct world *world, int x, int y, u8 pixel);
+world_clear (struct world *world);
+
+void
+world_set_pixel_type (struct world *world, int x, int y, u8 pixel);
 
 void
 world_randomize (struct world *world);

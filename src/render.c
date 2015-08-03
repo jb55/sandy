@@ -3,7 +3,7 @@
 #include "world.h"
 
 static inline void
-put_pixel(SDL_Surface *surface, int x, int y, struct pixel *pixdef) {
+put_pixel(SDL_Surface *surface, int x, int y, struct pixel_def *pixdef) {
   u8 *pixel = (u8*)surface->pixels;
   pixel += (y * surface->pitch) + (x * sizeof(u32));
   #if SDL_BYTEORDER == SDL_BIG_ENDIAN
@@ -18,9 +18,8 @@ put_pixel(SDL_Surface *surface, int x, int y, struct pixel *pixdef) {
 }
 
 void render(SDL_Surface *surface, struct world *world) {
-  int surface_size;
   u32 *surface_pixels;
-  struct pixel *pixdef;
+  struct pixel_def *pixdef;
   u8 pixel;
 
   int i, x, y;
@@ -40,13 +39,11 @@ void render(SDL_Surface *surface, struct world *world) {
 
   /* SDL_LockSurface(surface); */
 
-  surface_size = surface->w * surface->h;
-
   for (x = 0; x < world->w; ++x)
   for (y = 0; y < world->h; ++y) {
     i = y * world->w + x;
-    if (i >= surface_size) goto end;
-    pixel = world->pixels[i];
+    if (i >= world->num_pixels) goto end;
+    pixel = world->pixels[i].type;
     pixdef = &pixel_defs[pixel];
 
     // TODO: precompute this? probably negligible
