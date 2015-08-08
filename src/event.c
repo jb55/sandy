@@ -11,7 +11,8 @@ void process_events(const SDL_Renderer *renderer,
   SDL_Event event;
   u16 x, y;
   bool down = false;
-  static u8 draw_pixel = pix_sand;
+  const float def_accel = 0.005f;
+  static u8 draw_pixel = pix_rock;
   static bool left_down = false;
   static bool right_down = false;
 
@@ -26,14 +27,18 @@ void process_events(const SDL_Renderer *renderer,
       down = left_down || right_down;
 
       if (down) {
-        world_set_pixel_type(world, x, y, draw_pixel);
-        world_set_pixel_type(world, x+1, y, draw_pixel);
-        world_set_pixel_type(world, x-1, y, draw_pixel);
-        world_set_pixel_type(world, x, y-1, draw_pixel);
-        world_set_pixel_type(world, x, y+1, draw_pixel);
+        init_pixel_at(world, x, y, draw_pixel, def_accel);
+        init_pixel_at(world, x+1, y, draw_pixel, def_accel);
+        init_pixel_at(world, x-1, y, draw_pixel, def_accel);
+        init_pixel_at(world, x, y-1, draw_pixel, def_accel);
+        init_pixel_at(world, x, y+1, draw_pixel, def_accel);
       }
       break;
     case SDL_MOUSEBUTTONDOWN:
+      x = event.button.x;
+      y = event.button.y;
+      init_pixel_at(world, x, y, draw_pixel, def_accel);
+
       switch (event.button.button) {
       case SDL_BUTTON_LEFT: left_down = true; break;
       case SDL_BUTTON_RIGHT: right_down = true; break;

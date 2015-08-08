@@ -35,7 +35,7 @@ int main(void) {
     render(surface, &world);
 
     end_time = SDL_GetTicks();
-    printf("update + render %d ms\n", end_time - start_time);
+    /* printf("update + render %d ms\n", end_time - start_time); */
 
     SDL_RenderPresent(renderer);
 

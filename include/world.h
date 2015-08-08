@@ -28,6 +28,7 @@ struct pixel {
   float lx, ly;
   float accel;
   u8 type;
+  u8 just_set;
 };
 
 extern struct pixel_def pixel_defs[num_pixel_types];
@@ -46,8 +47,14 @@ struct world {
 void
 world_clear (struct world *world);
 
-void
-world_set_pixel_type (struct world *world, int x, int y, u8 pixel);
+struct pixel*
+world_get_pixel_ind (struct world *world, int code, int x, int y);
+
+struct pixel *
+init_pixel_at (struct world *world, int x, int y, u8 type, float accel);
+
+struct pixel*
+world_get_pixel (struct world *world, int x, int y);
 
 void
 world_randomize (struct world *world);
