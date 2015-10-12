@@ -229,9 +229,11 @@ void world_describe_rle(struct world *world,
     }
     else {
       printf("%d*%d\t", last_type, count);
-      if (++cols > ncols) printf("\n");
+      if (++cols == ncols) {
+        cols = 0;
+        printf("\n");
+      }
       count = 1;
-      cols = 0;
     }
     last_type = pixel->type;
   }
