@@ -28,7 +28,6 @@ struct pixel {
   float lx, ly;
   float accel;
   u8 type;
-  u8 just_set;
 };
 
 extern struct pixel_def pixel_defs[num_pixel_types];

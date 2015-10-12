@@ -41,7 +41,7 @@ int main(void) {
 
     world_swap_buffers(&world);
 
-    SDL_Delay(6);
+    /* SDL_Delay(6); */
     SDL_RenderClear(renderer);
     /* SDL_LoadObject("src/libsandy.so"); */
   }

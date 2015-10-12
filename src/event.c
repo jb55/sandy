@@ -11,7 +11,7 @@ void process_events(const SDL_Renderer *renderer,
   SDL_Event event;
   u16 x, y;
   bool down = false;
-  const float def_accel = 0.005f;
+  const float def_accel = 0.001f;
   static u8 draw_pixel = pix_rock;
   static bool left_down = false;
   static bool right_down = false;

@@ -14,7 +14,6 @@ struct pixel blank_pixel = {
   .lx = 0.0f,
   .ly = 0.0f,
   .accel = 0.0f,
-  .just_set = 0.0f,
   .type = pix_air
 };
 
@@ -50,7 +49,7 @@ world_index_pixels (struct world *world, int x, int y) {
 
 static inline bool
 should_collide(u8 pixel) {
-  return (pixel_defs[pixel].flags & PASS) != 0;
+  return (pixel_defs[pixel].flags & PASS) == 0;
 }
 
 static inline bool
@@ -67,10 +66,7 @@ clear_pixel(struct world *world, int to) {
 static inline void
 move_pixel(struct world *world, struct pixel *pixel, int to) {
   if (to > world->num_pixels) return;
-  struct pixel *npix;
-  npix = &world->pixels_next[to];
-  *npix = *pixel;
-  npix->just_set = 1;
+  world->pixels_next[to] = *pixel;
 }
 
 struct pixel *
@@ -125,7 +121,7 @@ world_randomize (struct world *world) {
 
     if (!pixel) continue;
 
-    pixel->accel = 0.000001f;
+    pixel->accel = 0.001f;
     pixel->type = pixel_type;
     pixel->x = pixel->lx = (float)x;
     pixel->y = pixel->ly = (float)y;
@@ -179,19 +175,18 @@ world_update(struct world *world) {
       middle->lx = middle->x;
       middle->ly = middle->y;
 
-      middle->x = px;
-      middle->y = py;
-
       dx = fabs(px - x);
       dy = fabs(py - y);
 
+      middle->x = dx > 1 ? middle->lx + 1 : px;
+      middle->y = py > 1 ? middle->ly + 1 : py;
 
       ix = (int)px;
       iy = (int)py;
 
       if (first) {
-        show_pixel(middle);
-        printf(" px %f py %f dx %f dy %f ix %d iy %d \n", px, py, dx, dy, ix, iy);
+        /* show_pixel(middle); */
+        /* printf(" px %f py %f dx %f dy %f ix %d iy %d \n", px, py, dx, dy, ix, iy); */
         first = false;
       }
 
@@ -202,17 +197,26 @@ world_update(struct world *world) {
       struct pixel *new_pos = world_get_pixel_ind(world, new_posi, ix, iy);
       /* struct pixel *next_new_pos = new_pos? &world->pixels_next[new_posi] : NULL; */
 
-      if (new_pos && new_posi != middlei /* && !should_collide(new_pos->type) && !next_new_pos->just_set */) {
-        /* middle->lx = middle->x; */
-        /* middle->ly = middle->y; */
-        /* printf("a middlei %d new_posi %d, num_pixels %d\n", middlei, new_posi, world->num_pixels); */
-        move_pixel(world, middle, new_posi);
-        clear_pixel(world, middlei);
-        /* show_pixel(&world->pixels_next[new_posi]); printf("\n"); */
-      }
-      else {
-        /* printf("b\n"); */
-        move_pixel(world, middle, middlei);
+      if (new_pos) {
+        if (!should_collide(new_pos->type)) {
+          // don't collide into the particle, push it out of it
+          /* middle->x -= fabs(new_pos->x - middle->x); */
+          /* middle->y -= fabs(new_pos->y - middle->y); */
+
+          move_pixel(world, middle, new_posi);
+          if (new_posi != middlei) {
+            clear_pixel(world, middlei);
+          }
+        }
+        // should collide
+        else {
+          /* printf("b\n"); */
+          /* middle->x -= fabs(new_pos->x - middle->x); */
+          /* middle->y -= fabs(new_pos->y - middle->y); */
+          /* middle->lx = middle->x; */
+          /* middle->ly = middle->y; */
+          move_pixel(world, middle, middlei);
+        }
       }
     }
     else {
