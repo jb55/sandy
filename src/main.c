@@ -31,7 +31,7 @@ int main(void) {
 
     start_time = SDL_GetTicks();
 
-    world_update(&world);
+    world_update_automata(&world);
     render(surface, &world);
 
     end_time = SDL_GetTicks();
@@ -41,7 +41,12 @@ int main(void) {
 
     world_swap_buffers(&world);
 
-    /* SDL_Delay(6); */
+    /* printf("pcur %p pnxt %p\n", world.pixels, world.pixels_next); */
+
+    printf("ncur "); world_describe_rle(&world, world.pixels, 5);
+    printf("nnxt "); world_describe_rle(&world, world.pixels_next, 5);
+
+    SDL_Delay(100);
     SDL_RenderClear(renderer);
     /* SDL_LoadObject("src/libsandy.so"); */
   }
