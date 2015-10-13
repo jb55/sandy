@@ -26,7 +26,7 @@ struct pixel_def {
 struct pixel {
   float x, y;
   float lx, ly;
-  float accel;
+  float ax, ay;
   u8 type;
 };
 

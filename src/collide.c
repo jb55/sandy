@@ -33,6 +33,8 @@ int collide_pixel(void *data, int x, int y) {
     c->against = pixel;
     c->collided = true;
 
+    // TODO: elastic collision?
+
     return STOP_LINE;
   }
 

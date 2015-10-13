@@ -5,6 +5,12 @@
 #include "graphics.h"
 #include "shapes.h"
 
+enum mode {
+  default_mode,
+  draw_mode,
+  wind_mode
+};
+
 static const float def_accel = 0.001f;
 
 struct draw_mode {
@@ -31,7 +37,8 @@ void process_events(const SDL_Renderer *renderer,
   static u8 draw_pixel = pix_rock;
   static bool left_down = false;
   static bool right_down = false;
-  static bool draw_mode = false;
+  static enum mode mode = default_mode;
+  static enum mode last_mode = default_mode;
   struct draw_mode draw_data;
   draw_data.world = world;
 
@@ -46,19 +53,23 @@ void process_events(const SDL_Renderer *renderer,
       down = left_down || right_down;
 
       if (down) {
-        if (draw_mode) {
+        switch (mode) {
+        case draw_mode:
           if (!drawing) {
             drawing = true;
             draw_x = x;
             draw_y = y;
           }
-        }
-        else {
+          break;
+        case wind_mode:
+          break;
+        default:
           init_pixel_at(world, x, y, draw_pixel, def_accel);
           init_pixel_at(world, x+1, y, draw_pixel, def_accel);
           init_pixel_at(world, x-1, y, draw_pixel, def_accel);
           init_pixel_at(world, x, y-1, draw_pixel, def_accel);
           init_pixel_at(world, x, y+1, draw_pixel, def_accel);
+          break;
         }
       } else {
         if (drawing && draw_mode) {
@@ -91,9 +102,14 @@ void process_events(const SDL_Renderer *renderer,
       switch (key) {
       case 'r': world_randomize(world); break;
       case 'd':
-        draw_mode = !draw_mode;
-        if (draw_mode) printf("draw mode on\n");
+        mode = mode == draw_mode? default_mode : draw_mode;
+        if (mode == draw_mode) printf("draw mode on\n");
         else printf("draw mode off\n");
+        break;
+      case 'w':
+        mode = mode == wind_mode? default_mode : wind_mode;
+        if (mode == wind_mode) printf("wind mode on\n");
+        else printf("wind mode off\n");
         break;
       case 'c':
         // clear the world

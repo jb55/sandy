@@ -14,7 +14,8 @@ struct pixel blank_pixel = {
   .y = 0.0f,
   .lx = 0.0f,
   .ly = 0.0f,
-  .accel = 0.0f,
+  .ax = 0.0f,
+  .ay = 0.0f,
   .type = pix_air
 };
 
@@ -79,8 +80,17 @@ init_pixel_at (struct world *world, int x, int y, u8 type, float accel) {
   if (y < 0 || y >= world->h) return NULL;
   if (x < 0 || x >= world->w) return NULL;
   struct pixel *pixel = &world->pixels[world_index_pixels(world, x, y)];
+  int sign = rand() % 2;
 
-  pixel->accel = accel;
+  if (should_move(type)) {
+    pixel->ay = accel;
+    pixel->ax = accel * 0.1 * sign;
+  }
+  else {
+    pixel->ay = 0;
+    pixel->ax = 0;
+  }
+
   pixel->type = type;
   pixel->x = x;
   pixel->y = y;
@@ -118,7 +128,8 @@ world_randomize (struct world *world) {
 
     if (!pixel) continue;
 
-    pixel->accel = 0.001f;
+    pixel->ax = 0;
+    pixel->ay = 0.001f;
     pixel->type = pixel_type;
     pixel->x = pixel->lx = (float)x;
     pixel->y = pixel->ly = (float)y;
@@ -127,8 +138,9 @@ world_randomize (struct world *world) {
 
 void
 show_pixel(struct pixel *pixel) {
-  printf("pixel (t %d x %f y %f lx %f ly %f accel %f)",
-         pixel->type, pixel->x, pixel->y, pixel->lx, pixel->ly, pixel->accel);
+  printf("pixel (t %d x %f y %f lx %f ly %f ax %f ay %f)",
+         pixel->type, pixel->x, pixel->y, pixel->lx, pixel->ly,
+         pixel->ax, pixel->ay);
 }
 
 void
@@ -136,7 +148,7 @@ world_update_automata(struct world *world) {
   int x = 0, y = 0;
   float lx = 0, ly = 0;
   int dt;
-  float nx = 0, ny = 0, dx = 0, dy = 0, rdy = 0;
+  float nx = 0, ny = 0, dx = 0, dy = 0;
   float dt_ratio;
   int ix = 0, iy = 0;
   int start_time, end_time;
@@ -162,10 +174,9 @@ world_update_automata(struct world *world) {
       continue;
     }
 
-    rdy = middle->y - middle->ly;
-
-    nx = middle->x; /* + (middle->x - middle->lx) * dt_ratio + middle->accel * dt * dt; */
-    ny = middle->y + rdy * dt_ratio + middle->accel * dt * dt;
+    // verlet
+    nx = middle->x + (middle->x - middle->lx) * dt_ratio + middle->ax * dt * dt;
+    ny = middle->y + (middle->y - middle->ly) * dt_ratio + middle->ay * dt * dt;
 
     middle->lx = middle->x;
     middle->ly = middle->y;
@@ -194,8 +205,8 @@ world_update_automata(struct world *world) {
                                       middlei, new_posi, middle, new_pos);
       if (coli.collided) {
         /* printf("collision y %d py %d\n", coli.y, coli.py); */
-        middle->x = middle->lx = coli.px;
-        middle->y = middle->ly = coli.py;
+        middle->lx = middle->x = coli.px;
+        middle->ly = middle->y = coli.py;
         // TODO (jb55): calc normal and bounce off
 
         new_posi = world_index_pixels(world, coli.px, coli.py);
