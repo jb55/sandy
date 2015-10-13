@@ -3,6 +3,7 @@
 #include "morton.h"
 #include "common.h"
 #include "graphics.h"
+#include "collide.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -45,11 +46,6 @@ static inline u32
 world_index_pixels (struct world *world, int x, int y) {
   /* return morton_encode2(x, y); */
   return y * world->w + x;
-}
-
-static inline bool
-should_collide(u8 pixel) {
-  return (pixel_defs[pixel].flags & PASS) == 0;
 }
 
 static inline bool
@@ -101,7 +97,7 @@ world_get_pixel (struct world *world, int x, int y) {
   return &world->pixels[world_index_pixels(world, x, y)];
 }
 
-static inline struct pixel *
+inline struct pixel *
 world_get_pixel_once (struct world *world, struct pixel *pixels, int x, int y) {
   if (y < 0 || y >= world->h) return NULL;
   if (x < 0 || x >= world->w) return NULL;
@@ -131,15 +127,16 @@ world_randomize (struct world *world) {
 
 void
 show_pixel(struct pixel *pixel) {
-  printf("pixel (x %f y %f lx %f ly %f accel %f)",
-         pixel->x, pixel->y, pixel->lx, pixel->ly, pixel->accel);
+  printf("pixel (t %d x %f y %f lx %f ly %f accel %f)",
+         pixel->type, pixel->x, pixel->y, pixel->lx, pixel->ly, pixel->accel);
 }
 
 void
 world_update_automata(struct world *world) {
   int x = 0, y = 0;
+  float lx = 0, ly = 0;
   int dt;
-  float px = 0, py = 0, dx = 0, dy = 0, rdy = 0;
+  float nx = 0, ny = 0, dx = 0, dy = 0, rdy = 0;
   float dt_ratio;
   int ix = 0, iy = 0;
   int start_time, end_time;
@@ -160,46 +157,61 @@ world_update_automata(struct world *world) {
     struct pixel *middle = world_get_pixel_ind(world, middlei, x, y);
 
     if (!should_move(middle->type)) {
-      move_pixel(world, middle, middlei);
+      if (!middle->type == pix_air)
+        move_pixel(world, middle, middlei);
       continue;
     }
 
     rdy = middle->y - middle->ly;
 
-    px = middle->x; /* + (middle->x - middle->lx) * dt_ratio + middle->accel * dt * dt; */
-    py = middle->y + rdy * dt_ratio + middle->accel * dt * dt;
+    nx = middle->x; /* + (middle->x - middle->lx) * dt_ratio + middle->accel * dt * dt; */
+    ny = middle->y + rdy * dt_ratio + middle->accel * dt * dt;
 
     middle->lx = middle->x;
     middle->ly = middle->y;
 
-    dx = fabs(px - middle->x);
-    dy = fabs(py - middle->y);
+    middle->x = nx;
+    middle->y = ny;
 
-    ix = (int)px;
-    iy = (int)py;
+    dx = fabs(nx - middle->lx);
+    dy = fabs(ny - middle->ly);
 
-    if (middle->type != 0 && first) {
-      show_pixel(middle);
-      printf("rdy %f px %f py %f dx %f dy %f ix %d iy %d \n", rdy, px, py, dx, dy, ix, iy);
+    ix = (int)nx;
+    iy = (int)ny;
+
+    if (middle->type == pix_sand && first) {
+      /* show_pixel(middle); */
+      /* printf("rdy %f nx %f ny %f dx %f dy %f ix %d iy %d \n", rdy, nx, ny, dx, dy, ix, iy); */
       first = false;
     }
 
-    middle->x = px;
-    middle->y = py;
-
     u32 new_posi = world_index_pixels(world, ix, iy);
     struct pixel *new_pos = world_get_pixel_ind(world, new_posi, ix, iy);
+
+    // jamdkl
+    if (new_posi != middlei) {
+      struct collision coli = collide(world, x, y, ix, iy,
+                                      middlei, new_posi, middle, new_pos);
+      if (coli.collided) {
+        /* printf("collision y %d py %d\n", coli.y, coli.py); */
+        middle->x = middle->lx = coli.px;
+        middle->y = middle->ly = coli.py;
+        // TODO (jb55): calc normal and bounce off
+
+        new_posi = world_index_pixels(world, coli.px, coli.py);
+        new_pos = world_get_pixel_ind(world, new_posi, coli.px, coli.py);
+      }
+    }
 
     if (!new_pos) {
       move_pixel(world, middle, middlei);
       continue;
     }
 
+    // it moved
     if (new_posi != middlei) {
+      // check for collision on move
       move_pixel(world, middle, new_posi);
-      /* move_pixel(world, middle, middle); */
-      /* clear_pixel(world, middlei); */
-      /* show_pixel(new_pos); */
     } else {
       move_pixel(world, middle, middlei);
     }

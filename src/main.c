@@ -16,7 +16,7 @@ int main(void) {
   srand(time(NULL));
 
   world_init(&world, 640, 480);
-  world_randomize(&world);
+  /* world_randomize(&world); */
 
   SDL_Window *window = SDL_CreateWindow(
     "Sandy", 0, 0, 640, 480, SDL_WINDOW_RESIZABLE);
@@ -39,14 +39,17 @@ int main(void) {
 
     SDL_RenderPresent(renderer);
 
+    /* printf("pcur "); world_describe_rle(&world, world.pixels, 10); */
+    /* printf("pnxt "); world_describe_rle(&world, world.pixels_next, 10); */
+
     world_swap_buffers(&world);
 
     /* printf("pcur %p pnxt %p\n", world.pixels, world.pixels_next); */
 
-    printf("ncur "); world_describe_rle(&world, world.pixels, 5);
-    printf("nnxt "); world_describe_rle(&world, world.pixels_next, 5);
+    /* printf("ncur "); world_describe_rle(&world, world.pixels, 10); */
+    /* printf("nnxt "); world_describe_rle(&world, world.pixels_next, 10); */
 
-    SDL_Delay(100);
+    /* SDL_Delay(100); */
     SDL_RenderClear(renderer);
     /* SDL_LoadObject("src/libsandy.so"); */
   }

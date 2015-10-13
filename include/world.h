@@ -55,6 +55,9 @@ world_get_pixel (struct world *world, int x, int y);
 struct world *
 world_init(struct world *world, int w, int h);
 
+struct pixel *
+world_get_pixel_once (struct world *world, struct pixel *pixels, int x, int y);
+
 void world_describe_rle(struct world *world,
                         struct pixel *pixels, int ncols);
 
@@ -64,5 +67,6 @@ void world_swap_buffers(struct world *world);
 void world_update(struct world *world);
 void world_update_automata(struct world *world);
 void world_free(struct world *world);
+
 
 #endif /* SANDY_WORLD_H */
