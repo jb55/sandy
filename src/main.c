@@ -49,7 +49,7 @@ int main(void) {
     /* printf("ncur "); world_describe_rle(&world, world.pixels, 10); */
     /* printf("nnxt "); world_describe_rle(&world, world.pixels_next, 10); */
 
-    /* SDL_Delay(100); */
+    SDL_Delay(6);
     SDL_RenderClear(renderer);
     /* SDL_LoadObject("src/libsandy.so"); */
   }
