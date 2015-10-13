@@ -1,7 +1,7 @@
 NAME ?= sandy
 BIN ?= $(NAME)
 PREFIX ?= /usr/local
-CFLAGS = -ggdb -O0  -I include -Wall -Wextra -std=c99 \
+CFLAGS = -ggdb -I include -Wall -Wextra -std=c99 \
 						-Wno-unused-function \
 						-Wno-unused-parameter \
 						-Wno-unused-variable \
@@ -17,7 +17,8 @@ OBJS = $(SRC)/event.o
 OBJS += $(SRC)/render.o
 OBJS += $(SRC)/world.o
 OBJS += $(SRC)/field.o
-OBJS += $(SRC)/morton.o
+OBJS += $(SRC)/shapes.o
+OBJS += $(SRC)/collide.o
 
 all: $(BIN)
 
@@ -28,7 +29,10 @@ $(SHLIB): $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -shared $^ -o $@
 
 $(BIN): $(SRC)/main.o $(SHLIB)
-	$(CC) $(CFLAGS) $(DEFS) $^ $(LDFLAGS) -o $@
+	$(CC) -O0 $(CFLAGS) $(DEFS) $^ $(LDFLAGS) -o $@
+
+$(BIN)_release: $(SRC)/main.o $(SHLIB)
+	$(CC) -O2 $(CFLAGS) $(DEFS) $^ $(LDFLAGS) -o $@
 
 install: $(BIN)
 	install -d $(PREFIX)/bin
