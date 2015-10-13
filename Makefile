@@ -42,4 +42,4 @@ nixbuild:
 	nix-shell --command 'make -j4'
 
 clean:
-	rm -f $(SRC)/main.o $(OBJS) $(SHLIB) $(BIN)
+	rm -f $(SRC)/main.o $(OBJS) $(SHLIB) $(BIN) $(BIN)_release
