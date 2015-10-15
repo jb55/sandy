@@ -11,8 +11,3 @@
 
     $ make
 
-  or
-
-    $ make sandy_release
-
-  for an optimized build
